@@ -1,0 +1,7 @@
+requests==2.25.1
+urllib3==1.26.4
+ipykernel
+dateparser==1.0.0
+python-dotenv==0.19.0
+elasticsearch==7.15.0
+elasticsearch-dsl==7.4.0
