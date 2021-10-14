@@ -3,13 +3,27 @@ import requests
 from urllib.parse import urlparse
 import os
 import json
-import logging
 import time
 from datetime import datetime, timezone, timedelta
 from tweet import TweetMedia
 
+import logging
+logging.basicConfig(
+    filename='logs.log', 
+    level=logging.INFO,
+    format='%(asctime)s %(message)s',
+    datefmt='%m/%d/%Y %I:%M:%S %p'
+)
+
 from dotenv import load_dotenv
 load_dotenv()
+
+from elasticsearch_dsl import connections
+connection_string = "{url}:{port}".format(
+    url=os.environ.get("ELASTIC_URL"), 
+    port = os.environ.get("ELASTIC_PORT")
+)
+connections.create_connection(hosts=[connection_string],http_auth=(os.environ.get("ELASTIC_USERNAME"),os.environ.get("ELASTIC_PWD")))
     
 #%% Fonctions utiles
 def bearer_oauth(r):
@@ -40,11 +54,14 @@ def get_full_urls(item):
             return urls
     return None
 
+# %% TRUE pour activer la sauvegarde locale des extractions en json dans data/
+local_save = False
+
 #%% Initialisation
 with open("medias.json") as f:
     medias = json.load(f)
 
-bearer_token = os.environ.get("BEARER_TOKEN_TESTS")
+bearer_token = os.environ.get("BEARER_TOKEN")
 url_twitter = "https://api.twitter.com/2/tweets/search/recent"
 output_file = r"data/tweets_medias.csv"
 
@@ -57,11 +74,12 @@ keys = [
 counter = 0
 
 #%% Extraction des tweets
-logging.info("Début d'exécution")
+logging.info("EXECUTION START")
 
 for media in medias:
     logging.info("Requesting data for twitter account : {}".format(media["twitter"]))
 
+    account_counter = 0
     time.sleep(1) # Sécurité pour la rate limit de 2 query/s
 
     query_string = '(from:{media_username})'.format(media_username=media["twitter"])
@@ -69,7 +87,7 @@ for media in medias:
     # on recherche les tweets des dernières 1h05 (soit 1h + petite sécurité)
     # date must be YYYY-MM-DDTHH:mm:ssZ (ISO 8601/RFC 3339)
 
-    start_time = (datetime.now(timezone.utc) - timedelta(hours=1, minutes=5)).isoformat()
+    start_time = (datetime.now(timezone.utc) - timedelta(hours=24, minutes=5)).isoformat()
     query_params = {
         'query': query_string,
         'start_time': start_time,
@@ -83,7 +101,10 @@ for media in medias:
     # on mape les données pour sortir un format à plat
     if('data' in json_response):
         tweets = list()
+        total_tweets = len(json_response["data"])
         for item in json_response["data"]:
+            account_counter +=1
+            logging.info("Extracting data for tweet # " + str(account_counter) + "/" + str(total_tweets))
 
             current_tweet = TweetMedia()
             current_tweet.id = item["id"]
@@ -103,19 +124,23 @@ for media in medias:
             current_tweet.reply_settings = item["reply_settings"]
             current_tweet.source = item["source"]
             current_tweet.full_text = item["text"]
+            current_tweet.media_type = media["type"]
             url_list = get_full_urls(item)
             current_tweet.article_links = [url for url in url_list if is_url_media_domain(url, media)] if url_list else None
 
-            #current_tweet.save()
+            current_tweet.save()
             tweets.append(current_tweet.to_dict())
+
             counter += 1
     else:
-        logging.info("Aucun tweet pour le média {}".format(media["twitter"]))
+        logging.info("No tweet for media {}".format(media["twitter"]))
 
-    with open("data/test.json", "w") as fp:
-        json.dump(tweets, fp)
+    if local_save:
+        data_folder = "data/" + media["twitter"]
+        if not os.path.exists(data_folder):
+            os.mkdir(data_folder)
+        with open(data_folder + "/" + datetime.now().strftime("%y-%m-%d_%H-%M") + ".json", "w") as fp:
+            json.dump(tweets, fp, default=str)
 
-logging.info("Fin d'exécution")
-
-print(counter)
+logging.info("EXECUTION END : " + str(counter) + "tweets extracted")
 # %%

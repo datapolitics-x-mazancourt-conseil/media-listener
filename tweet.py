@@ -29,6 +29,5 @@ class TweetMedia(Document):
         }
 
     def save(self, ** kwargs):
-        print("Saving tweet")
         self.meta.id = self.id
         return super(TweetMedia, self).save(** kwargs)

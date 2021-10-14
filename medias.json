@@ -2,7 +2,141 @@
     {
         "id": 1,
         "nom": "Le Monde",
+        "type": "Presse quotidienne nationale",
         "website": "https://www.lemonde.fr",
         "twitter": "lemondefr"
+    },
+    {
+        "id": 2,
+        "nom": "Le Figaro",
+        "type": "Presse quotidienne nationale",
+        "website": "https://www.lefigaro.fr",
+        "twitter": "Le_Figaro"
+    },
+    {
+        "id": 3,
+        "nom": "Les Echos",
+        "type": "Presse quotidienne nationale",
+        "website": "https://www.lesechos.fr",
+        "twitter": "LesEchos"
+    },
+    {
+        "id": 4,
+        "nom": "Libération",
+        "type": "Presse quotidienne nationale",
+        "website": "https://www.liberation.fr",
+        "twitter": "libe"
+    },
+    {
+        "id": 5,
+        "nom": "Le Parisien",
+        "type": "Presse quotidienne nationale",
+        "website": "https://www.leparisien.fr",
+        "twitter": "le_Parisien"
+    },
+    {
+        "id": 6,
+        "nom": "La Croix",
+        "type": "Presse quotidienne nationale",
+        "website": "https://www.la-croix.com",
+        "twitter": "LaCroix"
+    },
+    {
+        "id": 7,
+        "nom": "L'Humanité",
+        "type": "Presse quotidienne nationale",
+        "website": "https://www.humanite.fr",
+        "twitter": "humanite_fr"
+    },
+    {
+        "id": 8,
+        "nom": "L'Opinion",
+        "type": "Presse quotidienne nationale",
+        "website": "https://www.lopinion.fr",
+        "twitter": "lopinion_fr"
+    },
+    {
+        "id": 9,
+        "nom": "Ouest-France",        
+        "type": "Presse quotidienne régionale",
+        "website": "https://www.ouest-france.fr",
+        "twitter": "OuestFrance"
+    },
+    {
+        "id": 10,
+        "nom": "Sud Ouest",        
+        "type": "Presse quotidienne régionale",
+        "website": "https://www.sudouest.fr",
+        "twitter": "sudouest"
+    },
+    {
+        "id": 11,
+        "nom": "La Voix du Nord",        
+        "type": "Presse quotidienne régionale",
+        "website": "https://www.lavoixdunord.fr",
+        "twitter": "lavoixdunord"
+    },
+    {
+        "id": 12,
+        "nom": "Le Télégramme",        
+        "type": "Presse quotidienne régionale",
+        "website": "https://www.letelegramme.fr",
+        "twitter": "LeTelegramme"
+    },
+    {
+        "id": 13,
+        "nom": "BFMTV",        
+        "type": "Info continue",
+        "website": "https://www.bfmtv.com",
+        "twitter": "BFMTV"
+    },
+    {
+        "id": 14,
+        "nom": "CNEWS",        
+        "type": "Info continue",
+        "website": "https://www.cnews.fr",
+        "twitter": "CNEWS"
+    },
+    {
+        "id": 15,
+        "nom": "FranceInfo",        
+        "type": "Info continue",
+        "website": "https://www.francetvinfo.fr/",
+        "twitter": "franceinfo"
+    },
+    {
+        "id": 16,
+        "nom": "Le Point",        
+        "type": "Presse hebdomadaire",
+        "website": "https://www.lepoint.fr/",
+        "twitter": "LePoint"
+    },
+    {
+        "id": 17,
+        "nom": "L'Obs",        
+        "type": "Presse hebdomadaire",
+        "website": "https://www.nouvelobs.com",
+        "twitter": "lobs"
+    },
+    {
+        "id": 18,
+        "nom": "L'Express",        
+        "type": "Presse hebdomadaire",
+        "website": "https://www.lexpress.fr",
+        "twitter": "LEXPRESS"
+    },
+    {
+        "id": 19,
+        "nom": "Challenges",        
+        "type": "Presse hebdomadaire",
+        "website": "https://www.challenges.fr",
+        "twitter": "Challenges"
+    },
+    {
+        "id": 20,
+        "nom": "Mediapart",        
+        "type": "Presse en ligne",
+        "website": "https://www.mediapart.fr",
+        "twitter": "Mediapart"
     }
 ]
