@@ -1,7 +1,7 @@
 from elasticsearch_dsl import Document, Date, Nested, Boolean, analyzer, InnerDoc, Completion, Keyword, Text, Integer, connections
 from datetime import datetime
 
-class Tweet(Document):
+class TweetMedia(Document):
     id = Text()
     username = Text()
     author_id = Text()
@@ -19,14 +19,16 @@ class Tweet(Document):
     reply_settings = Text()
     source = Text()
     full_text = Text()
+    media_type = Text()
+    article_links = Text()
 
     class Index:
-        name = 'tweet'
+        name = 'tweet-media'
         settings = {
           "number_of_shards": 2,
         }
 
     def save(self, ** kwargs):
-        print("saving tweet")
+        print("Saving tweet")
         self.meta.id = self.id
-        return super(Tweet, self).save(** kwargs)
+        return super(TweetMedia, self).save(** kwargs)

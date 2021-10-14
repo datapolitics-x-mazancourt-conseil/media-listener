@@ -1,15 +1,16 @@
 # %% Init
 import requests
+from urllib.parse import urlparse
 import os
 import json
 import logging
 import time
 from datetime import datetime, timezone, timedelta
-from tweet import Tweet
+from tweet import TweetMedia
 
 from dotenv import load_dotenv
 load_dotenv()
-
+    
 #%% Fonctions utiles
 def bearer_oauth(r):
     r.headers["Authorization"] = f"Bearer {bearer_token}"
@@ -18,16 +19,32 @@ def bearer_oauth(r):
 
 def connect_to_endpoint(url, params):
     response = requests.get(url, auth=bearer_oauth, params=params)
-    print(response.status_code)
     if response.status_code != 200:
         raise Exception(response.status_code, response.text)
     return response.json()
+
+def is_url_media_domain(url, media):
+    url_domain = urlparse(url).netloc.strip("www.").lower()
+    media_domain = urlparse(media["website"]).netloc.strip("www.").lower()
+    return (url_domain == media_domain)
+
+def get_full_urls(item):
+    if "entities" in item and "urls" in item["entities"]:
+        urls = []
+        for url in item["entities"]["urls"]:
+            if "unwound_url" in url:
+                urls.append(url["unwound_url"])
+            elif "expanded_url" in url:
+                urls.append(url["expanded_url"])
+        if len(urls) > 0:
+            return urls
+    return None
 
 #%% Initialisation
 with open("medias.json") as f:
     medias = json.load(f)
 
-bearer_token = os.environ.get("BEARER_TOKEN")
+bearer_token = os.environ.get("BEARER_TOKEN_TESTS")
 url_twitter = "https://api.twitter.com/2/tweets/search/recent"
 output_file = r"data/tweets_medias.csv"
 
@@ -55,9 +72,9 @@ for media in medias:
     start_time = (datetime.now(timezone.utc) - timedelta(hours=1, minutes=5)).isoformat()
     query_params = {
         'query': query_string,
-        'start_time':start_time,
-        'max_results':100,
-        'tweet.fields': 'attachments,author_id,context_annotations,conversation_id,created_at,entities,geo,id,in_reply_to_user_id,lang,possibly_sensitive,public_metrics,referenced_tweets,reply_settings,source,text,withheld'
+        'start_time': start_time,
+        'max_results': 100,
+        'tweet.fields': 'attachments,author_id,context_annotations,conversation_id,created_at,entities,geo,id,in_reply_to_user_id,lang,possibly_sensitive,public_metrics,referenced_tweets,reply_settings,source,text,withheld',
     }
     
     # pour chaque média, on fait la requête à l'API Twitter
@@ -65,9 +82,10 @@ for media in medias:
 
     # on mape les données pour sortir un format à plat
     if('data' in json_response):
+        tweets = list()
         for item in json_response["data"]:
 
-            current_tweet = Tweet()
+            current_tweet = TweetMedia()
             current_tweet.id = item["id"]
             current_tweet.username = media["twitter"]
             current_tweet.author_id = item["author_id"]
@@ -85,13 +103,19 @@ for media in medias:
             current_tweet.reply_settings = item["reply_settings"]
             current_tweet.source = item["source"]
             current_tweet.full_text = item["text"]
+            url_list = get_full_urls(item)
+            current_tweet.article_links = [url for url in url_list if is_url_media_domain(url, media)] if url_list else None
 
-            current_tweet.save()
-
+            #current_tweet.save()
+            tweets.append(current_tweet.to_dict())
             counter += 1
     else:
         logging.info("Aucun tweet pour le média {}".format(media["twitter"]))
 
+    with open("data/test.json", "w") as fp:
+        json.dump(tweets, fp)
+
 logging.info("Fin d'exécution")
 
 print(counter)
+# %%

@@ -2,7 +2,7 @@
     {
         "id": 1,
         "nom": "Le Monde",
-        "site": "https://lemonde.fr/",
+        "website": "https://www.lemonde.fr",
         "twitter": "lemondefr"
     }
 ]
