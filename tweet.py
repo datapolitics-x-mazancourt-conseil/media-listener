@@ -20,7 +20,7 @@ class TweetMedia(Document):
     source = Text()
     full_text = Text()
     media_type = Text()
-    article_links = Text()
+    article_links = Keyword()
 
     class Index:
         name = 'tweet-media'

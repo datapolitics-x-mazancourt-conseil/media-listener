@@ -87,7 +87,7 @@ for media in medias:
     # on recherche les tweets des dernières 1h05 (soit 1h + petite sécurité)
     # date must be YYYY-MM-DDTHH:mm:ssZ (ISO 8601/RFC 3339)
 
-    start_time = (datetime.now(timezone.utc) - timedelta(hours=24, minutes=5)).isoformat()
+    start_time = (datetime.now(timezone.utc) - timedelta(hours=1,minutes=5)).isoformat()
     query_params = {
         'query': query_string,
         'start_time': start_time,
@@ -104,7 +104,7 @@ for media in medias:
         total_tweets = len(json_response["data"])
         for item in json_response["data"]:
             account_counter +=1
-            logging.info("Extracting data for tweet # " + str(account_counter) + "/" + str(total_tweets))
+            #logging.info("Extracting data for tweet # " + str(account_counter) + "/" + str(total_tweets))
 
             current_tweet = TweetMedia()
             current_tweet.id = item["id"]
