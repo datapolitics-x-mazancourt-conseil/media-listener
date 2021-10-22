@@ -138,5 +138,12 @@
         "type": "Presse en ligne",
         "website": "https://www.mediapart.fr",
         "twitter": "Mediapart"
+    },
+    {
+        "id": 21,
+        "nom": "LCI",        
+        "type": "Info continue",
+        "website": "https://www.lci.fr",
+        "twitter": "LCI"
     }
 ]
